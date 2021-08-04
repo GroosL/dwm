@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const int startwithgaps[]    = { 0 };	/* 1 means gaps are used by default, this can be customized for each tag */
 static const unsigned int gappx[]   = { 10 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -12,13 +12,13 @@ static char *fonts[]          = { "monospace:size=10", "JoyPixels:pixelsize=10:a
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#1a1b26";
 static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#c0caf5";
-static const char col_gray4[]       = "#a9b1d6";
+static const char col_gray3[]       = "#a9b1d6";
+static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#414868";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  "#343b58"  },
+	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
 
 /* tagging */
@@ -65,7 +65,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run_history", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
-static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "alsa_output.pci-0000_00_1b.0.analog-stereo", "toggle",  NULL };
+static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
 static const char *playpause[] = { "/usr/bin/playerctl", "play-pause", NULL };
 static const char *next[] = { "/usr/bin/playerctl", "next", NULL };
 static const char *prev[] = { "/usr/bin/playerctl", "previous", NULL };
@@ -73,10 +73,9 @@ static const char *prev[] = { "/usr/bin/playerctl", "previous", NULL };
 static Key keys[] = {
 	/* modifier         	keychain        key        function        argument */
 	{ MODKEY,      	  		   XK_d, 	    XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,				   XK_d,		XK_p,	   spawn,		   SHCMD("passmenu2 -i")},
+	{ MODKEY,				   XK_d,		XK_p,	   spawn,		   SHCMD("passmenu -i")},
 	{ MODKEY,                  XK_d,        XK_c,      spawn,          SHCMD("= --dmenu=dmenu")},
-    { MODKEY,      			   XK_d,        XK_k,      spawn,          SHCMD("dmenu_kb")}, 
-	{ 0,					   -1,			XK_Print,  spawn,	   	   SHCMD("flameshot gui") },
+    { MODKEY,      			   XK_d,        XK_k,      spawn,          SHCMD("dmenu_kb"),}, 
 	{ MODKEY,		           -1,		    XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                  -1, 		    XK_b,      togglebar,      {0} },
 	{ MODKEY,                  -1,		    XK_j,      focusstack,     {.i = +1 } },
@@ -113,13 +112,13 @@ static Key keys[] = {
 	TAGKEYS(                   -1,     		XK_8,                      7)
 	TAGKEYS(                   -1,     		XK_9,                      8)
 	{ 0,                       -1,	  		XF86XK_AudioLowerVolume, spawn, SHCMD("amixer set Master 5%-; kill -44 $(pidof dwmblocks)") },
-	{ 0,                       -1,			XF86XK_AudioMute, spawn,   SHCMD("/usr/bin/pactl set-sink-mute alsa_output.pci-0000_00_1b.0.analog-stereo toggle; kill -44 $(pidof dwmblocks)") },
+	{ 0,                       -1,			XF86XK_AudioMute, spawn, {.v = mutevol } },
 	{ 0,                       -1,			XF86XK_AudioRaiseVolume, spawn, SHCMD("amixer set Master 5%+; kill -44 $(pidof dwmblocks)") },
     { 0,                       -1,			XF86XK_AudioNext, spawn, {.v = next   } },
     { 0,                       -1,			XF86XK_AudioPrev, spawn, {.v = prev   } },
     { 0,                       -1,			XF86XK_AudioPlay, spawn, {.v = playpause   } },
 	{ MODKEY|ShiftMask,        -1,     		XK_r,      quit,           {0} },
-	{ MODKEY|ShiftMask,        -1,          XK_e,      spawn,          SHCMD("pkill Xorg")},
+	{ MODKEY|ShiftMask,        -1,          XK_e,      spawn,          SHCMD("pkill dwm")},
 };
 
 /* button definitions */
@@ -137,3 +136,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+
