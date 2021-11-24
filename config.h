@@ -8,8 +8,8 @@ static unsigned int snap      = 32;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
+/* Outras fontes boas Iosevka Aile e Fantasque Sans Mono */
 static char *fonts[]          = { "monospace:size=10", "JoyPixels:pixelsize=10:antialias=true:autohint=true", "FontAwesome:pixelsize=14"  };
-static const char dmenufont[]       = "monospace:size=10";
 static char normbgcolor[]            = "#222222";
 static char normbordercolor[]      = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -33,9 +33,10 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating		isterminal		noswallow 	 monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,          	0,   			0,			 -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,          	0, 				-1,			 -1 },
-    { "St",       NULL,       NULL,       0, 	        0,   	        1,    	  	    0,  		 -1 },
+	{ "St",       NULL,       NULL,       0, 	        0,   	        1,    	  	    0,  		 -1 },
+	{ "urxvt",       NULL,       NULL,       0, 	        0,   	        1,    	  	    0,  		 -1 },
 	{ NULL,       NULL,   "Event Tester", 0,       	    0, 	 	        0,    	        1,           -1 }, /* xev */
-    { "Zathura",    NULL,       NULL,       0,            0,              0,              1,           -1 }, /* xev */
+	{ "Zathura",    NULL,       NULL,       0,            0,              0,              1,           -1 }, /* xev */
 };
 
 /* layout(s) */
@@ -63,7 +64,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run_history" };
+static const char *dmenucmd[] = { "dmenu_run_history", "-i", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 static const char *mutevol[] = { "/usr/bin/amixer", "set",   "Master", "toggle",  NULL };
@@ -94,61 +95,62 @@ ResourcePref resources[] = {
 
 static Key keys[] = {
 	/* modifier         	keychain        key        function        argument */
-	{ MODKEY,      	  		   XK_d, 	    XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,				   XK_d,		XK_p,	   spawn,		   SHCMD("passmenu2 -i")},
+	{ MODKEY,      	  	   XK_d, 	XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,		   XK_d,	XK_p,	   spawn,	   SHCMD("passmenu2 -i")},
 	{ MODKEY,                  XK_d,        XK_c,      spawn,          SHCMD("= --dmenu=dmenu")},
-    { MODKEY,      			   XK_d,        XK_k,      spawn,          SHCMD("dmenu_kb")},
+	{ MODKEY,      		   XK_d,        XK_k,      spawn,          SHCMD("dmenu_kb")},
 	{ MODKEY,                  XK_d,        XK_e,      spawn,          SHCMD("dmenu_emoji")},
-	{ 0,					   -1,			XK_Print,  spawn,	   	   SHCMD("dmenu_scrot") },
+	{ MODKEY,                  XK_d,        XK_q,      spawn,          SHCMD("dmenu_power")},
+	{ 0,			   -1,		XK_Print,  spawn,	   SHCMD("dmenu_scrot") },
 	{ ShiftMask,               -1,          XK_Print,  spawn,          SHCMD("flameshot gui") },
-	{ MODKEY,		           -1,		    XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                  -1, 		    XK_b,      togglebar,      {0} },
+	{ MODKEY, 		   -1,		XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                  -1, 		XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,        -1,          XK_b,      spawn,          SHCMD("kill -44 $(pidof dwmblocks)")},
-	{ MODKEY,                  -1,		    XK_j,      focusstack,     {.i = +1 } },
+	{ MODKEY,                  -1,		XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY|ShiftMask,        -1,          XK_s,      focusstack,     {.i = +1 } },
-	{ MODKEY,                  -1,		    XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY,                  -1,		XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY|ShiftMask,        -1,          XK_w,      focusstack,     {.i = -1 } },
-	{ MODKEY,                  -1,		    XK_x,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                  -1,     	    XK_z,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                  -1,     		XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY,                  -1,		XK_x,      incnmaster,     {.i = +1 } },
+	{ MODKEY,                  -1,     	XK_z,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                  -1,     	XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY|ShiftMask,        -1,          XK_a,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                  -1,		  	XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY,                  -1,		XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,        -1,          XK_d,      setmfact,       {.f = +0.05} },
-	{ MODKEY|ShiftMask,        -1,     		XK_Return, zoom,           {0} },
-	{ MODKEY,                  -1,     		XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,        -1,     		XK_q,      killclient,     {0} },
-	{ MODKEY,                  -1,     		XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                  -1,     		XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                  -1,     		XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                  -1,     		XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,        -1,     		XK_space,  togglefloating, {0} },
-	{ MODKEY,                  -1,     		XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,        -1,     		XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                  -1,     		XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                  -1,     		XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,        -1,     		XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,        -1,     		XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                  -1, 		    XK_F5,     xrdb,           {.v = NULL } },
-	{ MODKEY,                  -1,     		XK_minus,  setgaps,        {.i = -5 } },
-	{ MODKEY,                  -1,     		XK_equal,  setgaps,        {.i = +5 } },
-	{ MODKEY|ShiftMask,        -1,     		XK_minus,  setgaps,        {.i = GAP_RESET } },
-	{ MODKEY|ShiftMask,        -1,     		XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
-	TAGKEYS(                   -1,     		XK_1,                      0)
-	TAGKEYS(                   -1,     		XK_2,                      1)
-	TAGKEYS(                   -1,     		XK_3,                      2)
-	TAGKEYS(                   -1,     		XK_4,                      3)
-	TAGKEYS(                   -1,     		XK_5,                      4)
-	TAGKEYS(                   -1,     		XK_6,                      5)
-	TAGKEYS(                   -1,     		XK_7,                      6)
-	TAGKEYS(                   -1,     		XK_8,                      7)
-	TAGKEYS(                   -1,     		XK_9,                      8)
-	{ 0,                       -1,	  		XF86XK_AudioLowerVolume, spawn, SHCMD("amixer set Master 5%-; kill -44 $(pidof dwmblocks)") },
-	{ 0,                       -1,			XF86XK_AudioMute, spawn,   SHCMD("/usr/bin/amixer set Master toggle; kill -44 $(pidof dwmblocks)") },
-	{ 0,                       -1,			XF86XK_AudioRaiseVolume, spawn, SHCMD("amixer set Master 5%+; kill -44 $(pidof dwmblocks)") },
-    { 0,                       -1,			XF86XK_AudioNext, spawn, {.v = next   } },
-    { 0,                       -1,			XF86XK_AudioPrev, spawn, {.v = prev   } },
-    { 0,                       -1,			XF86XK_AudioPlay, spawn, {.v = playpause   } },
-	{ MODKEY|ShiftMask,        -1,     		XK_r,      quit,           {0} },
+	{ MODKEY|ShiftMask,        -1,     	XK_Return, zoom,           {0} },
+	{ MODKEY,                  -1,     	XK_Tab,    view,           {0} },
+	{ MODKEY|ShiftMask,        -1,     	XK_q,      killclient,     {0} },
+	{ MODKEY,                  -1,     	XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                  -1,     	XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                  -1,     	XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                  -1,     	XK_space,  setlayout,      {0} },
+	{ MODKEY|ShiftMask,        -1,     	XK_space,  togglefloating, {0} },
+	{ MODKEY,                  -1,     	XK_0,      view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,        -1,     	XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                  -1,     	XK_comma,  focusmon,       {.i = -1 } },
+	{ MODKEY,                  -1,     	XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask,        -1,     	XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,        -1,     	XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY,                  -1, 		XK_F5,     xrdb,           {.v = NULL } },
+	{ MODKEY,                  -1,     	XK_minus,  setgaps,        {.i = -5 } },
+	{ MODKEY,                  -1,     	XK_equal,  setgaps,        {.i = +5 } },
+	{ MODKEY|ShiftMask,        -1,     	XK_minus,  setgaps,        {.i = GAP_RESET } },
+	{ MODKEY|ShiftMask,        -1,     	XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
+	TAGKEYS(                   -1,     	XK_1,                      0)
+	TAGKEYS(                   -1,     	XK_2,                      1)
+	TAGKEYS(                   -1,     	XK_3,                      2)
+	TAGKEYS(                   -1,     	XK_4,                      3)
+	TAGKEYS(                   -1,     	XK_5,                      4)
+	TAGKEYS(                   -1,     	XK_6,                      5)
+	TAGKEYS(                   -1,     	XK_7,                      6)
+	TAGKEYS(                   -1,     	XK_8,                      7)
+	TAGKEYS(                   -1,     	XK_9,                      8)
+	{ 0,                       -1,	  	XF86XK_AudioLowerVolume,   spawn, SHCMD("amixer set Master 5%-; kill -44 $(pidof dwmblocks)") },
+	{ 0,                       -1,		XF86XK_AudioMute, spawn,   SHCMD("/usr/bin/amixer set Master toggle; kill -44 $(pidof dwmblocks)") },
+	{ 0,                       -1,		XF86XK_AudioRaiseVolume,   spawn, SHCMD("amixer set Master 5%+; kill -44 $(pidof dwmblocks)") },
+	{ 0,                       -1,		XF86XK_AudioNext, spawn,   {.v = next   } },
+	{ 0,                       -1,		XF86XK_AudioPrev, spawn,   {.v = prev   } },
+	{ 0,                       -1,		XF86XK_AudioPlay, spawn,   {.v = playpause   } },
+	{ MODKEY|ShiftMask,        -1,     	XK_r,      quit,           {0} },
 	{ MODKEY|ShiftMask,        -1,          XK_e,      spawn,          SHCMD("pkill Xorg")},
 };
 
