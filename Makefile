@@ -11,7 +11,7 @@ all: options dwm
 options:
 	@echo dwm build options:
 	@echo "CFLAGS   = ${CFLAGS}"
-	@echo "LDFLAGS  = ${LDFLAGS}"
+	@echo "LDFLAGS  = ${LDFLAGS} -fuse-ld=lld"
 	@echo "CC       = ${CC}"
 
 .c.o:
